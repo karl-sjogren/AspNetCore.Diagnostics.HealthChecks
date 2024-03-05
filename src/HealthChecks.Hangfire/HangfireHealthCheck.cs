@@ -43,7 +43,7 @@ public class HangfireHealthCheck : IHealthCheck
                 long enqueuedJobs = hangfireMonitoringApi.EnqueuedCount(jobQueue);
                 if (enqueuedJobs > _hangfireOptions.MaximumQueuedJobs)
                 {
-                    (errorList ??= new()).Add($"Hangfire has #{enqueuedJobs} queded jobs for the queue \"${jobQueue}\" and the max allowed is {_hangfireOptions.MaximumQueuedJobs}.");
+                    (errorList ??= new()).Add($"Hangfire has {enqueuedJobs} queded jobs for the queue \"{jobQueue}\" and the maximum allowed is {_hangfireOptions.MaximumQueuedJobs}.");
                 }
             }
 
