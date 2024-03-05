@@ -37,6 +37,16 @@ public class HangfireHealthCheck : IHealthCheck
                 }
             }
 
+            if (_hangfireOptions.MaximumQueuedJobs.HasValue)
+            {
+                string jobQueue = _hangfireOptions.JobQueue ?? "default";
+                long enqueuedJobs = hangfireMonitoringApi.EnqueuedCount(jobQueue);
+                if (enqueuedJobs > _hangfireOptions.MaximumQueuedJobs)
+                {
+                    (errorList ??= new()).Add($"Hangfire has #{enqueuedJobs} queded jobs for the queue \"${jobQueue}\" and the max allowed is {_hangfireOptions.MaximumQueuedJobs}.");
+                }
+            }
+
             if (errorList?.Count > 0)
             {
                 return Task.FromResult(new HealthCheckResult(context.Registration.FailureStatus, description: string.Join(" + ", errorList)));
